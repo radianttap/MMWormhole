@@ -148,6 +148,7 @@ static NSString * const MMWormholeNotificationName = @"MMWormholeNotificationNam
 			case MMWormholeStoreTypeUserDefaults:
 			{
 				[self.sharedDefaults setObject:messageObject forKey:[self.directory stringByAppendingString:identifier]];
+				[self.sharedDefaults synchronize];
 			}
 				break;
 				
@@ -209,6 +210,7 @@ static NSString * const MMWormholeNotificationName = @"MMWormholeNotificationNam
 		case MMWormholeStoreTypeUserDefaults:
 		{
 			[self.sharedDefaults removeObjectForKey:[self.directory stringByAppendingString:identifier]];
+			[self.sharedDefaults synchronize];
 		}
 			break;
 			
@@ -317,6 +319,7 @@ void wormholeNotificationCallback(CFNotificationCenterRef center,
 			for (NSString *key in arr) {
 				[self.sharedDefaults removeObjectForKey:key];
 			}
+			[self.sharedDefaults synchronize];
 		}
 			break;
 			
