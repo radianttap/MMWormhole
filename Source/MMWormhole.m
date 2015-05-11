@@ -303,17 +303,36 @@ void wormholeNotificationCallback(CFNotificationCenterRef center,
 }
 
 - (void)clearAllMessageContents {
-    if (self.directory != nil) {
-        NSArray *messageFiles = [self.fileManager contentsOfDirectoryAtPath:[self messagePassingDirectoryPath] error:NULL];
-        
-        NSString *directoryPath = [self messagePassingDirectoryPath];
-        
-        for (NSString *path in messageFiles) {
-            NSString *filePath = [directoryPath stringByAppendingPathComponent:path];
+	//	unless directory is set, it's impossible to know which keys/files should be removed
+	//	(directory should probably not be optional)
+	if (self.directory == nil) return;
 
-            [self.fileManager removeItemAtPath:filePath error:NULL];
-        }
-    }
+	switch (self.storeType) {
+		case MMWormholeStoreTypeUserDefaults:
+		{
+			NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(NSString *key, NSDictionary *bindings) {
+				return [key containsString:self.directory];
+			}];
+			NSArray *arr = [[[self.sharedDefaults dictionaryRepresentation] allKeys] filteredArrayUsingPredicate:predicate];
+			for (NSString *key in arr) {
+				[self.sharedDefaults removeObjectForKey:key];
+			}
+		}
+			break;
+			
+		case MMWormholeStoreTypeFile:
+		default:
+		{
+			NSArray *messageFiles = [self.fileManager contentsOfDirectoryAtPath:[self messagePassingDirectoryPath] error:NULL];
+			NSString *directoryPath = [self messagePassingDirectoryPath];
+			
+			for (NSString *path in messageFiles) {
+				NSString *filePath = [directoryPath stringByAppendingPathComponent:path];
+				[self.fileManager removeItemAtPath:filePath error:NULL];
+			}
+		}
+			break;
+	}
 }
 
 - (void)listenForMessageWithIdentifier:(NSString *)identifier
