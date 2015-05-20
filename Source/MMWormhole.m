@@ -77,7 +77,7 @@ static NSString * const MMWormholeNotificationName = @"MMWormholeNotificationNam
 			case MMWormholeStoreTypeUserDefaults:
 			{
 				_fileManager = nil;
-				_sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:_applicationGroupIdentifier];
+				_sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:self.applicationGroupIdentifier];
 			}
 				break;
 
@@ -97,6 +97,12 @@ static NSString * const MMWormholeNotificationName = @"MMWormholeNotificationNam
     }
 
     return self;
+}
+
+- (NSUserDefaults *)sharedDefaults {
+
+	[_sharedDefaults synchronize];
+	return _sharedDefaults;
 }
 
 - (void)dealloc {
@@ -147,8 +153,9 @@ static NSString * const MMWormholeNotificationName = @"MMWormholeNotificationNam
 		switch (self.storeType) {
 			case MMWormholeStoreTypeUserDefaults:
 			{
-				[self.sharedDefaults setObject:messageObject forKey:[self.directory stringByAppendingString:identifier]];
-				[self.sharedDefaults synchronize];
+				NSUserDefaults *def = [self sharedDefaults];
+				[def setObject:messageObject forKey:[self.directory stringByAppendingString:identifier]];
+				[def synchronize];
 			}
 				break;
 				
@@ -185,7 +192,8 @@ static NSString * const MMWormholeNotificationName = @"MMWormholeNotificationNam
 	switch (self.storeType) {
 		case MMWormholeStoreTypeUserDefaults:
 		{
-			messageObject = [self.sharedDefaults objectForKey:[self.directory stringByAppendingString:identifier]];
+			NSUserDefaults *def = [self sharedDefaults];
+			messageObject = [def objectForKey:[self.directory stringByAppendingString:identifier]];
 		}
 			break;
 			
@@ -209,8 +217,9 @@ static NSString * const MMWormholeNotificationName = @"MMWormholeNotificationNam
 	switch (self.storeType) {
 		case MMWormholeStoreTypeUserDefaults:
 		{
-			[self.sharedDefaults removeObjectForKey:[self.directory stringByAppendingString:identifier]];
-			[self.sharedDefaults synchronize];
+			NSUserDefaults *def = [self sharedDefaults];
+			[def removeObjectForKey:[self.directory stringByAppendingString:identifier]];
+			[def synchronize];
 		}
 			break;
 			
@@ -315,11 +324,12 @@ void wormholeNotificationCallback(CFNotificationCenterRef center,
 			NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(NSString *key, NSDictionary *bindings) {
 				return [key containsString:self.directory];
 			}];
-			NSArray *arr = [[[self.sharedDefaults dictionaryRepresentation] allKeys] filteredArrayUsingPredicate:predicate];
+			NSUserDefaults *def = [self sharedDefaults];
+			NSArray *arr = [[[def dictionaryRepresentation] allKeys] filteredArrayUsingPredicate:predicate];
 			for (NSString *key in arr) {
-				[self.sharedDefaults removeObjectForKey:key];
+				[def removeObjectForKey:key];
 			}
-			[self.sharedDefaults synchronize];
+			[def synchronize];
 		}
 			break;
 			
