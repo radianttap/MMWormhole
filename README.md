@@ -106,7 +106,7 @@ MMWormhole requires iOS 7.0 or higher or OS X 10.10 or higher.
 
 Original MMWormhole was created by [Conrad Stoll](http://conradstoll.com) at [Mutual Mobile](http://www.mutualmobile.com).
 Credit also to [Wade Spires](https://devforums.apple.com/people/mindsaspire), [Tom Harrington](https://twitter.com/atomicbird), and [Rene Cacheaux](https://twitter.com/rcachatx) for work and inspiration surrounding notifications between the containing app and it's extensions.
-NSUserDefaults support was added by [Aleksandar Vacić)[http://aplus.rs] at [Radiant Tap](http://radianttap.com).
+NSUserDefaults support was added by [Aleksandar Vacić](http://aplus.rs) at [Radiant Tap](http://radianttap.com).
 
 ## License
 
