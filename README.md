@@ -1,3 +1,6 @@
+
+Important: this fork has branched into another direction from the original MMWormhole!
+
 # MMWormhole
 
 MMWormhole creates a bridge between an iOS or OS X extension and its containing application. The wormhole is meant to be used to pass data or commands back and forth between the two locations. Messages are archived to files which are written to the application's shared App Group. The effect closely resembles interprocess communication between the app and the extension, though true interprocess communication does not exist between extensions and containing apps. 
@@ -31,12 +34,8 @@ The MMWormhole Example app will only work with your shared App Group identifiers
 
 ---
 ##Installing MMWormhole
-<img src="https://cocoapod-badges.herokuapp.com/v/MMWormhole/badge.png"/><br/>
-You can install Wormhole in your project by using [CocoaPods](https://github.com/cocoapods/cocoapods):
 
-```Ruby
-pod 'MMWormhole', '~> 1.1.1'
-```
+Copy MMWormhole.* files from Source somewhere into your project.
 
 ## Overview
 
@@ -55,6 +54,14 @@ Initialize MMWormhole with your App Group identifier and an optional directory n
 ```objective-c
 self.wormhole = [[MMWormhole alloc] initWithApplicationGroupIdentifier:@"group.com.mutualmobile.wormhole"
                                                      optionalDirectory:@"wormhole"];
+```
+
+You can also force shared NSUserDefaults usage instead of files:
+
+```objective-c
+self.wormhole = [[MMWormhole alloc] initWithApplicationGroupIdentifier:@"group.com.mutualmobile.wormhole"
+storeType:MMWormholeStoreTypeUserDefaults
+directory:@"wormhole"];
 ```
 
 ### Passing a Message
@@ -97,9 +104,9 @@ MMWormhole requires iOS 7.0 or higher or OS X 10.10 or higher.
 
 ## Credits
 
-MMWormhole was created by [Conrad Stoll](http://conradstoll.com) at [Mutual Mobile](http://www.mutualmobile.com).
-
+Original MMWormhole was created by [Conrad Stoll](http://conradstoll.com) at [Mutual Mobile](http://www.mutualmobile.com).
 Credit also to [Wade Spires](https://devforums.apple.com/people/mindsaspire), [Tom Harrington](https://twitter.com/atomicbird), and [Rene Cacheaux](https://twitter.com/rcachatx) for work and inspiration surrounding notifications between the containing app and it's extensions.
+NSUserDefaults support was added by [Aleksandar Vacić)[http://aplus.rs] at [Radiant Tap](http://radianttap.com).
 
 ## License
 
