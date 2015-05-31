@@ -2,6 +2,7 @@
 // MMWormhole.h
 //
 // Copyright (c) 2014 Mutual Mobile (http://www.mutualmobile.com/)
+// Copyright (c) 2015 Radiant Tap (http://radianttap.com/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -39,14 +40,18 @@
  mailbox when your app or extension wakes up, in case any messages have been left there while you
  were away.
  
- Passing a message to the wormhole can be inferred as a data transfer package or as a command. In
- both cases, the passed message is archived using NSKeyedArchiver to a .archive file named with the
+ Passing a message to the wormhole can be inferred as a data transfer package or as a command. 
+ [storeType=MMWormholeStoreTypeFile]
+ In both cases, the passed message is archived using NSKeyedArchiver to a .archive file named with the
  included identifier. Once passed, the contents of the written .archive file can be queried using
  the messageWithIdentifier: method. As a command, the simple existence of the message in the shared
  app group should be taken as proof of the command's invocation. The contents of the message then
  become parameters to be evaluated along with the command. Of course, to avoid confusion later, it
  may be best to clear the contents of the message after recognizing the command. The
  -clearMessageContentsForIdentifier: method is provided for this purpose.
+ [storeType=MMWormholeStoreTypeUserDefaults]
+ This behaves exactly the same, except that instead of .archive files, contents of the message is 
+ saved as key in shared NSUserDefaults.
  
  A good wormhole includes wormhole aliens who listen for message changes. This class supports
  CFNotificationCenter Darwin Notifications, which act as a bridge between the containing app and the
@@ -58,7 +63,7 @@
  
  It's worth noting that as a best practice to avoid confusing issues or deadlock that messages
  should be passed one way only for a given identifier. The containing app should pass messages to
- one set of identifiers, which are only ever read or listened for by the extension, and vic versa.
+ one set of identifiers, which are only ever read or listened for by the extension, and vice versa.
  The extension should not then write messages back to the same identifier. Instead, the extension
  should use it's own set of identifiers to associate with it's messages back to the application.
  Passing messages to the same identifier from two locations should be done only at your own risk.
@@ -77,16 +82,18 @@ typedef NS_ENUM(NSInteger, MMWormholeStoreType) {
  be used to contain passed messages. It is also recommended that you include a directory name for
  messages to be read and written, but this parameter is optional.
  
- You can also pass custom store option and choose which one to use
+ You should also pass custom store option and choose which one to use. 
+ * MMWormholeStoreTypeFile will use files in the shared AppGroup (this is default and how original MMWormhole works). Use this if you will be transfering larger bits of data
+ * MMWormholeStoreTypeUserDefaults will use shared NSUserDefaults and as such is useful for small bits of data
  
  @param identifier An application group identifier
- @param storeType A MMWormholeStoreType enum value that defines
- @param directory An optional directory to read/write messages
+ @param storeType A MMWormholeStoreType enum value that defines where the messages are saved. Default is MMWormholeStoreTypeFile
+ @param directory A directory to read/write messages (used as key prefix in case of MMWormholeStoreTypeUserDefaults). Default is "wormhole"
  */
 
 - (instancetype)initWithApplicationGroupIdentifier:(NSString *)identifier
 										 storeType:(MMWormholeStoreType)storeType
-								 optionalDirectory:(NSString *)directory NS_DESIGNATED_INITIALIZER;
+										 directory:(NSString *)directory NS_DESIGNATED_INITIALIZER;
 
 /**
  This method must be called with an application group identifier that will
@@ -96,7 +103,7 @@ typedef NS_ENUM(NSInteger, MMWormholeStoreType) {
  Uses MMWormholeStoreTypeFile as storage.
  
  @param identifier An application group identifier
- @param directory An optional directory to read/write messages
+ @param directory An optional directory to read/write messages (used as key prefix in case of MMWormholeStoreTypeUserDefaults). If you send nil, it will default to "wormhole"
  */
 
 - (instancetype)initWithApplicationGroupIdentifier:(NSString *)identifier

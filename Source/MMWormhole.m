@@ -2,6 +2,7 @@
 // MMWormhole.m
 //
 // Copyright (c) 2014 Mutual Mobile (http://www.mutualmobile.com/)
+// Copyright (c) 2015 Radiant Tap (http://radianttap.com/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -57,10 +58,13 @@ static NSString * const MMWormholeNotificationName = @"MMWormholeNotificationNam
 - (instancetype)initWithApplicationGroupIdentifier:(NSString *)identifier
 								 optionalDirectory:(NSString *)directory {
 	
-	return [self initWithApplicationGroupIdentifier:identifier storeType:MMWormholeStoreTypeFile optionalDirectory:directory];
+	if ([directory length] == 0) {
+		directory = @"wormhole";
+	}
+	return [self initWithApplicationGroupIdentifier:identifier storeType:MMWormholeStoreTypeFile directory:directory];
 }
 
-- (instancetype)initWithApplicationGroupIdentifier:(NSString *)identifier storeType:(MMWormholeStoreType)storeType optionalDirectory:(NSString *)directory {
+- (instancetype)initWithApplicationGroupIdentifier:(NSString *)identifier storeType:(MMWormholeStoreType)storeType directory:(NSString *)directory {
     if ((self = [super init])) {
 		
         if (NO == [[NSFileManager defaultManager] respondsToSelector:@selector(containerURLForSecurityApplicationGroupIdentifier:)]) {
