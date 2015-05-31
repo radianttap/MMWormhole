@@ -24,7 +24,7 @@ The wormhole also supports CFNotificationCenter Darwin Notifications in an effor
 
 ## Getting Started
 
-- Install MMWormhole via CocoaPods or by downloading the Source files
+- Install MMWormhole by downloading the Source files
 - [Configure your App and Extension to support App Groups](https://developer.apple.com/library/ios/documentation/General/Conceptual/ExtensibilityPG/ExtensionScenarios.html)
 - Begin using MMWormhole to pass messages between your App and Extension
 
